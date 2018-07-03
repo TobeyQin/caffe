@@ -33,7 +33,7 @@ ADD . $CAFFE_ROOT
 # https://github.com/docker/hub-feedback/issues/460
 ENV CLONE_TAG=caffe-py3-1.0
 
-RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
+RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/TobeyQin/caffe.git . && \
     pip3 install --upgrade pip && \
     cp pip3 /usr/bin/ && \
     cd python && for req in $(cat requirements.txt) pydot; do pip3 install $req; done && cd .. && \
@@ -46,4 +46,3 @@ ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
 ENV PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH
 RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
 
-WORKDIR /workspace
