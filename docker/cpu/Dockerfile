@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-LABEL maintainer caffe-maint@googlegroups.com
+LABEL maintainer TobeyQin
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -17,23 +17,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libprotobuf-dev \
         libsnappy-dev \
         protobuf-compiler \
-        python-dev \
-        python-numpy \
-        python-pip \
-        python-setuptools \
-        python-scipy && \
+	python3.5 \
+        python3-dev \
+        python3-numpy \
+        python3-pip \
+        python3-setuptools \
+        python3-scipy && \
     rm -rf /var/lib/apt/lists/*
 
 ENV CAFFE_ROOT=/opt/caffe
 WORKDIR $CAFFE_ROOT
+ADD . $CAFFE_ROOT
 
 # FIXME: use ARG instead of ENV once DockerHub supports this
 # https://github.com/docker/hub-feedback/issues/460
-ENV CLONE_TAG=1.0
+ENV CLONE_TAG=caffe-py3-1.0
 
 RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
-    pip install --upgrade pip && \
-    cd python && for req in $(cat requirements.txt) pydot; do pip install $req; done && cd .. && \
+    pip3 install --upgrade pip && \
+    cp pip3 /usr/bin/ && \
+    cd python && for req in $(cat requirements.txt) pydot; do pip3 install $req; done && cd .. && \
     mkdir build && cd build && \
     cmake -DCPU_ONLY=1 .. && \
     make -j"$(nproc)"
